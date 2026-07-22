@@ -926,33 +926,25 @@ function getLogo(team) {
 }
 
 const SCHEDULE_URLS = {
-    PREM: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGHDcX_hIIzPlyqTZhiySqRNTQho5XFkyRaHqHa0tiPDC3D7zO_b3Mud054IRLzPKaHV1cERaYj3w0/pub?gid=1616061697&single=true&output=csv',
-    LALIGA: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGHDcX_hIIzPlyqTZhiySqRNTQho5XFkyRaHqHa0tiPDC3D7zO_b3Mud054IRLzPKaHV1cERaYj3w0/pub?gid=1516477023&single=true&output=csv',
+    PREM: null,
+    LALIGA: null,
     MLS: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGHDcX_hIIzPlyqTZhiySqRNTQho5XFkyRaHqHa0tiPDC3D7zO_b3Mud054IRLzPKaHV1cERaYj3w0/pub?gid=1689966801&single=true&output=csv',
-    UCL: {
-        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGHDcX_hIIzPlyqTZhiySqRNTQho5XFkyRaHqHa0tiPDC3D7zO_b3Mud054IRLzPKaHV1cERaYj3w0/pub?gid=284985759&single=true&output=csv',
-        columns: { home: 'B', away: 'C', homeScore: 'D', awayScore: 'D', dateCol: 'A' }
-    },
+    UCL: null,
     WC2026: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGHDcX_hIIzPlyqTZhiySqRNTQho5XFkyRaHqHa0tiPDC3D7zO_b3Mud054IRLzPKaHV1cERaYj3w0/pub?gid=1967785362&single=true&output=csv',
-    EUROPA: {
-        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGHDcX_hIIzPlyqTZhiySqRNTQho5XFkyRaHqHa0tiPDC3D7zO_b3Mud054IRLzPKaHV1cERaYj3w0/pub?gid=284985759&single=true&output=csv',
-        columns: { home: 'H', away: 'I', homeScore: 'J', awayScore: 'J', dateCol: 'G' }
-    }
+    EUROPA: null
 };
 
 
 const DOMESTIC_TOURNEY_URLS = {
-    PREM: '',
-    LALIGA: '',
     MLS: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGHDcX_hIIzPlyqTZhiySqRNTQho5XFkyRaHqHa0tiPDC3D7zO_b3Mud054IRLzPKaHV1cERaYj3w0/pub?gid=2001251008&single=true&output=csv'
 };
 
 const STANDINGS_URLS = {
-    PREM: '',
-    LALIGA: '',
+    PREM: null,
+    LALIGA: null,
     MLS: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT03H3Or-8DCxNZkAnIdhVuwJsej-AEuo6VgZO3pG4WsBYt1HPxCLN0CsGa5P33XghzKltG5AiymB4q/pub?gid=1177278404&single=true&output=csv',
-    UCL: '',
-    EUROPA: '',
+    UCL: null,
+    EUROPA: null,
     WC2026: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGHDcX_hIIzPlyqTZhiySqRNTQho5XFkyRaHqHa0tiPDC3D7zO_b3Mud054IRLzPKaHV1cERaYj3w0/pub?gid=175572507&single=true&output=csv'
 };
 
@@ -1509,6 +1501,8 @@ let standingsCache = {};
 function loadStandingsData(lg) {
     // WC2026 uses group standings, not a regular standings CSV
     if (lg === 'WC2026') return Promise.resolve([]);
+    // No URL configured (wiped for new season)
+    if (!STANDINGS_URLS[lg]) return Promise.resolve([]);
 
     if (standingsCache[lg] && standingsCache[lg].loaded) return Promise.resolve(standingsCache[lg].rows);
 
@@ -1586,9 +1580,57 @@ function goToStandingsFromTeam(lg) {
 // Format: { league: { 'Matchday Label': { startRow: X, endRow: Y } } }
 const TOTM_CONFIG = {
     PREM: {
+        'Matchday 38': { startRow: 7251, endRow: 7470 },
+        'Matchday 37': { startRow: 7053, endRow: 7250 },
+        'Matchday 36': { startRow: 6833, endRow: 7052 },
+        'Matchday 35': { startRow: 6613, endRow: 6832 },
+        'Matchday 34': { startRow: 6349, endRow: 6612 },
+        'Matchday 33': { startRow: 6129, endRow: 6348 },
+        'Matchday 32': { startRow: 5909, endRow: 6128 },
+        'Matchday 31': { startRow: 5733, endRow: 5908 },
+        'Matchday 30': { startRow: 5524, endRow: 5732 },
+        'Matchday 29': { startRow: 5304, endRow: 5523 },
+        'Matchday 28': { startRow: 5084, endRow: 5303 },
+        'Matchday 27': { startRow: 4864, endRow: 5061 },
+        'Matchday 26': { startRow: 4644, endRow: 4863 },
+        'Matchday 25': { startRow: 4424, endRow: 4643 },
+        'Matchday 24': { startRow: 4204, endRow: 4423 },
+        'Matchday 23': { startRow: 3984, endRow: 4203 },
+        'Matchday 22': { startRow: 3764, endRow: 3983 },
+        'Matchday 21': { startRow: 3544, endRow: 3763 },
+        'Matchday 20': { startRow: 3324, endRow: 3543 },
+        'Matchday 19': { startRow: 3104, endRow: 3323 },
+        'Matchday 18': { startRow: 2884, endRow: 3103 },
+        'Matchday 17': { startRow: 2686, endRow: 2883 },
+        'Matchday 16': { startRow: 2466, endRow: 2685 },
+        'Matchday 15': { startRow: 2246, endRow: 2465 },
+        'Matchday 14': { startRow: 2136, endRow: 2245 },
+        'Matchday 13': { startRow: 1916, endRow: 2135 },
+        'Matchday 12': { startRow: 1696, endRow: 1915 },
+        'Matchday 11': { startRow: 1256, endRow: 1475 },
+        'Matchday 10': { startRow: 1036, endRow: 1255 },
+        'Matchday 9': { startRow: 794, endRow: 1013 },
+        'Matchday 8': { startRow: 640, endRow: 793 },
+        'Matchday 7': { startRow: 442, endRow: 639 },
+        'Matchday 6': { startRow: 222, endRow: 441 },
+        'Matchday 5': { startRow: 2, endRow: 221 },
+        'Matchday 4': { startRow: 1476, endRow: 1695 }
     },
     LALIGA: {
-     },
+        'Matchday 38': { startRow: 7045, endRow: 7264 },
+        'Matchday 37': { startRow: 6825, endRow: 7044 },
+        'Matchday 36': { startRow: 6605, endRow: 6824 },
+        'Matchday 35': { startRow: 6385, endRow: 6604 },
+        'Matchday 34': { startRow: 6165, endRow: 6384 },
+        'Matchday 33': { startRow: 5945, endRow: 6164 },
+        'Matchday 32': { startRow: 5725, endRow: 5944 },
+        'Matchday 31': { startRow: 5505, endRow: 5724 },
+        'Matchday 30': { startRow: 5285, endRow: 5504 },
+        'Matchday 29': { startRow: 5065, endRow: 5284 },
+        'Matchday 28': { startRow: 4845, endRow: 5064 },
+        'Matchday 27': { startRow: 4625, endRow: 4844 },
+        'Matchday 26': { startRow: 4405, endRow: 4624 }
+    },
     MLS: {
         'Matchday 19': { startRow: 3918, endRow: 4137 },
         'Matchday 18': { startRow: 3698, endRow: 3917 },
@@ -1611,7 +1653,16 @@ const TOTM_CONFIG = {
         'Matchday 1': { startRow: 2, endRow: 221 }
     },
     UCL: {
-       },
+        'SF Leg 2': { startRow: 2169, endRow: 2212 },
+        'SF Leg 1': { startRow: 2125, endRow: 2168 },
+        'QF Leg 2': { startRow: 2037, endRow: 2124 },
+        'QF Leg 1': { startRow: 2004, endRow: 2036 },
+        'R16 Leg 2': { startRow: 1850, endRow: 2003 },
+        'R16 Leg 1': { startRow: 1696, endRow: 1849 },
+        'R16 PO Leg 2': { startRow: 1597, endRow: 1695 },
+        'R16 PO Leg 1': { startRow: 1487, endRow: 1596 },
+        'Round 8': { startRow: 1278, endRow: 1486 }
+    },
     WC2026: {}
 };
 
@@ -1619,9 +1670,25 @@ const TOTM_CONFIG = {
 // Maps matchday numbers to their start dates for proper rating-to-match assignment
 const MATCHDAY_DATES = {
     PREM: {
-       },
+        1: '2025-08-15', 2: '2025-08-22', 3: '2025-08-29', 4: '2025-09-13', 5: '2025-09-20',
+        6: '2025-09-27', 7: '2025-10-04', 8: '2025-10-18', 9: '2025-10-25', 10: '2025-11-01',
+        11: '2025-11-08', 12: '2025-11-22', 13: '2025-11-29', 14: '2025-12-03', 15: '2025-12-06',
+        16: '2025-12-13', 17: '2025-12-20', 18: '2025-12-27', 19: '2025-12-30', 20: '2026-01-03',
+        21: '2026-01-07', 22: '2026-01-17', 23: '2026-01-24', 24: '2026-01-31', 25: '2026-02-07',
+        26: '2026-02-11', 27: '2026-02-21', 28: '2026-02-28', 29: '2026-03-04', 30: '2026-03-14',
+        31: '2026-03-21', 32: '2026-04-11', 33: '2026-04-18', 34: '2026-04-25', 35: '2026-05-02',
+        36: '2026-05-09', 37: '2026-05-17', 38: '2026-05-24'
+    },
     LALIGA: {
-       },
+        1: '2025-08-15', 2: '2025-08-22', 3: '2025-08-29', 4: '2025-09-13', 5: '2025-09-20',
+        6: '2025-09-23', 7: '2025-09-27', 8: '2025-10-04', 9: '2025-10-18', 10: '2025-10-25',
+        11: '2025-11-01', 12: '2025-11-08', 13: '2025-11-22', 14: '2025-11-29', 15: '2025-12-06',
+        16: '2025-12-13', 17: '2025-12-20', 18: '2026-01-03', 19: '2026-01-10', 20: '2026-01-17',
+        21: '2026-01-24', 22: '2026-01-31', 23: '2026-02-07', 24: '2026-02-14', 25: '2026-02-21',
+        26: '2026-02-28', 27: '2026-03-07', 28: '2026-03-14', 29: '2026-03-21', 30: '2026-04-04',
+        31: '2026-04-11', 32: '2026-04-18', 33: '2026-04-21', 34: '2026-05-02', 35: '2026-05-09',
+        36: '2026-05-12', 37: '2026-05-16', 38: '2026-05-23'
+    },
     MLS: {
         1: '2026-02-21', 2: '2026-02-28', 3: '2026-03-04', 4: '2026-03-07', 5: '2026-03-14',
         6: '2026-03-21', 7: '2026-04-01', 8: '2026-04-11', 9: '2026-04-18', 10: '2026-04-22',
@@ -1790,21 +1857,8 @@ const LEAGUE_META = {
 };
 
 const STATS_URLS = {
-    PREM: {
-        goals: '',
-        assists: '',
-        cleanSheets: '',
-        ratingsLog: '',
-        avgRatings: '',
-        lineupBuilder: ''
-    },
-    LALIGA: {
-        goals: '',
-        assists: '',
-        cleanSheets: '',
-        ratingsLog: '',
-        avgRatings: ''
-    },
+    PREM: null,
+    LALIGA: null,
     MLS: {
         goals: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuw34XoWFJCJm7vYxAmfNNOOuVnprbE2kuVb9OpEgUZQsA6KhbxCYtW81oe1BkaGJ01fFMBpV5he31/pub?gid=0&single=true&output=csv',
         assists: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuw34XoWFJCJm7vYxAmfNNOOuVnprbE2kuVb9OpEgUZQsA6KhbxCYtW81oe1BkaGJ01fFMBpV5he31/pub?gid=1828601090&single=true&output=csv',
@@ -1812,14 +1866,7 @@ const STATS_URLS = {
         ratingsLog: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuw34XoWFJCJm7vYxAmfNNOOuVnprbE2kuVb9OpEgUZQsA6KhbxCYtW81oe1BkaGJ01fFMBpV5he31/pub?gid=812230696&single=true&output=csv',
         avgRatings: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuw34XoWFJCJm7vYxAmfNNOOuVnprbE2kuVb9OpEgUZQsA6KhbxCYtW81oe1BkaGJ01fFMBpV5he31/pub?gid=692292778&single=true&output=csv'
     },
-    UCL: {
-        goals: '',
-        assists: '',
-        cleanSheets: '',
-        ratingsLog: '',
-        avgRatings: '',
-        lineupBuilder: ''
-    },
+    UCL: null,
     WC2026: {
         goals: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMSx7Qn7j4pyMGvzlnxejZ56JFBnkkpfsHi9MqZmYCu996ATM2C7bSjdOhGu1zBnV3oJSarsvGyYKs/pub?gid=0&single=true&output=csv',
         assists: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMSx7Qn7j4pyMGvzlnxejZ56JFBnkkpfsHi9MqZmYCu996ATM2C7bSjdOhGu1zBnV3oJSarsvGyYKs/pub?gid=1828601090&single=true&output=csv',
@@ -2057,6 +2104,7 @@ async function init() {
         }
 
         const scheduleConfig = SCHEDULE_URLS[k];
+        if (!scheduleConfig) continue; // URL wiped for new season
         const isCustomColumns = typeof scheduleConfig === 'object' && scheduleConfig.url;
         const url = isCustomColumns ? scheduleConfig.url : scheduleConfig;
         const colConfig = isCustomColumns ? {
