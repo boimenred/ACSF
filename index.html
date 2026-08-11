@@ -926,8 +926,14 @@ function getLogo(team) {
 }
 
 const SCHEDULE_URLS = {
-    PREM: null,
-    LALIGA: null,
+    PREM: {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSPa0EQR6xx8XBuwpHytVja15wA0OsnqOvcKDGN-3jo4iavF09MyQhdAfpb3qcEKdPpZmZWBcmOEVRv/pub?gid=0&single=true&output=csv',
+        columns: { dateCol: 'A', comp: 'B', home: 'C', homeScore: 'D', awayScore: 'E', away: 'F' }
+    },
+    LALIGA: {
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSPa0EQR6xx8XBuwpHytVja15wA0OsnqOvcKDGN-3jo4iavF09MyQhdAfpb3qcEKdPpZmZWBcmOEVRv/pub?gid=278260428&single=true&output=csv',
+        columns: { dateCol: 'A', comp: 'B', home: 'C', homeScore: 'D', awayScore: 'E', away: 'F' }
+    },
     MLS: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGHDcX_hIIzPlyqTZhiySqRNTQho5XFkyRaHqHa0tiPDC3D7zO_b3Mud054IRLzPKaHV1cERaYj3w0/pub?gid=1689966801&single=true&output=csv',
     UCL: null,
     WC2026: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGHDcX_hIIzPlyqTZhiySqRNTQho5XFkyRaHqHa0tiPDC3D7zO_b3Mud054IRLzPKaHV1cERaYj3w0/pub?gid=1967785362&single=true&output=csv',
@@ -940,8 +946,8 @@ const DOMESTIC_TOURNEY_URLS = {
 };
 
 const STANDINGS_URLS = {
-    PREM: null,
-    LALIGA: null,
+    PREM: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSPa0EQR6xx8XBuwpHytVja15wA0OsnqOvcKDGN-3jo4iavF09MyQhdAfpb3qcEKdPpZmZWBcmOEVRv/pub?gid=57541427&single=true&output=csv',
+    LALIGA: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSPa0EQR6xx8XBuwpHytVja15wA0OsnqOvcKDGN-3jo4iavF09MyQhdAfpb3qcEKdPpZmZWBcmOEVRv/pub?gid=551232306&single=true&output=csv',
     MLS: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT03H3Or-8DCxNZkAnIdhVuwJsej-AEuo6VgZO3pG4WsBYt1HPxCLN0CsGa5P33XghzKltG5AiymB4q/pub?gid=1177278404&single=true&output=csv',
     UCL: null,
     EUROPA: null,
@@ -1509,11 +1515,45 @@ function loadStandingsData(lg) {
     standingsCache[lg] = { loaded: false, rows: [] };
 
     return new Promise((resolve) => {
+        // PREM and LALIGA use new column-index format (no Position col):
+        // A=Team, B=MP, C=W, D=D, E=L, F=GF, G=GA, H=GD, I=PTS
+        const useIndexFormat = (lg === 'PREM' || lg === 'LALIGA');
+
         Papa.parse(STANDINGS_URLS[lg], {
             download: true,
-            header: true,
+            header: !useIndexFormat,
             complete: (res) => {
-                const rows = (res.data || []).map(r => {
+                let rows;
+                if (useIndexFormat) {
+                    rows = (res.data || []).slice(1) // skip header row
+                        .map((r, idx) => {
+                            const team = (r[0] || '').toString().trim();
+                            if (!team || team.toLowerCase() === 'team') return null;
+                            const mp  = parseInt(r[1] || 0, 10);
+                            const w   = parseInt(r[2] || 0, 10);
+                            const d   = parseInt(r[3] || 0, 10);
+                            const l   = parseInt(r[4] || 0, 10);
+                            const gf  = parseInt(r[5] || 0, 10);
+                            const ga  = parseInt(r[6] || 0, 10);
+                            const gd  = parseInt(r[7] || 0, 10);
+                            const pts = parseInt(r[8] || 0, 10);
+                            return {
+                                pos: idx + 1,
+                                team,
+                                mp: isNaN(mp) ? 0 : mp,
+                                pl:  isNaN(mp) ? 0 : mp,
+                                w:   isNaN(w)  ? 0 : w,
+                                d:   isNaN(d)  ? 0 : d,
+                                l:   isNaN(l)  ? 0 : l,
+                                gf:  isNaN(gf) ? 0 : gf,
+                                ga:  isNaN(ga) ? 0 : ga,
+                                gd:  isNaN(gd) ? 0 : gd,
+                                pts: isNaN(pts)? 0 : pts,
+                                wdl: `${isNaN(w)?0:w}-${isNaN(d)?0:d}-${isNaN(l)?0:l}`,
+                            };
+                        }).filter(Boolean);
+                } else {
+                rows = (res.data || []).map(r => {
                     let pos = r.Position || r.position || r['#'] || '';
                     let team = r.Team || r.team || '';
                     const fixed = _stripLeadingPosFromTeam(pos, team);
@@ -1527,7 +1567,6 @@ function loadStandingsData(lg) {
                     const ga = parseInt((r.GA || r.ga || 0), 10);
                     const gdRaw = parseInt((r.GD || r.gd || (gf - ga)), 10);
 
-                    // Parse W/D/L from WDL string or individual columns
                     let w = parseInt((r.W || r.w || 0), 10);
                     let d = parseInt((r.D || r.d || 0), 10);
                     let l = parseInt((r.L || r.l || 0), 10);
@@ -1556,6 +1595,7 @@ function loadStandingsData(lg) {
                 }).filter(r => r.team);
 
                 rows.sort((a,b) => a.pos - b.pos);
+                }
 
                 standingsCache[lg] = { loaded: true, rows };
                 resolve(rows);
@@ -2032,18 +2072,27 @@ async function init() {
     const pushMatch = (league, date, row, compOverride, colConfig) => {
         if (!date) return;
         
-        // colConfig contains 0-based array indices
-        // Default columns (B-E in sheet = indices 1-4 in array): home=1, away=2, score=3, comp=4
-        const homeCol = colConfig?.home ?? 1;
-        const awayCol = colConfig?.away ?? 2;
+        const homeCol  = colConfig?.home  ?? 1;
+        const awayCol  = colConfig?.away  ?? 2;
         const scoreCol = colConfig?.score ?? 3;
-        const compCol = colConfig?.comp ?? 4;
+        const awayScoreCol = colConfig?.awayScore ?? null;
+        const compCol  = colConfig?.comp  ?? 4;
         
         if (!row[homeCol] || !row[awayCol]) return;
         
         const home = (row[homeCol] || '').trim();
         const away = (row[awayCol] || '').trim();
-        const rawScore = (row[scoreCol] || 'v').toString().trim();
+
+        // If separate home/away score columns exist, combine them into "H - A"
+        let rawScore;
+        if (awayScoreCol !== null) {
+            const hs = (row[scoreCol] || '').toString().trim();
+            const as_ = (row[awayScoreCol] || '').toString().trim();
+            rawScore = (hs !== '' && as_ !== '') ? `${hs} - ${as_}` : 'v';
+        } else {
+            rawScore = (row[scoreCol] || 'v').toString().trim();
+        }
+
         const rawComp = (compOverride || row[compCol] || '').toString().trim();
 
         const isScoreLike = (s) => {
@@ -2108,11 +2157,12 @@ async function init() {
         const isCustomColumns = typeof scheduleConfig === 'object' && scheduleConfig.url;
         const url = isCustomColumns ? scheduleConfig.url : scheduleConfig;
         const colConfig = isCustomColumns ? {
-            home: scheduleConfig.columns.home.charCodeAt(0) - 65, // A=0, B=1, G=6, H=7
+            home: scheduleConfig.columns.home.charCodeAt(0) - 65,
             away: scheduleConfig.columns.away.charCodeAt(0) - 65,
             score: scheduleConfig.columns.homeScore.charCodeAt(0) - 65,
-            comp: 4,
-            dateCol: scheduleConfig.columns.dateCol ? scheduleConfig.columns.dateCol.charCodeAt(0) - 65 : 0 // Date column
+            awayScore: scheduleConfig.columns.awayScore ? scheduleConfig.columns.awayScore.charCodeAt(0) - 65 : null,
+            comp: scheduleConfig.columns.comp ? scheduleConfig.columns.comp.charCodeAt(0) - 65 : 4,
+            dateCol: scheduleConfig.columns.dateCol ? scheduleConfig.columns.dateCol.charCodeAt(0) - 65 : 0
         } : null;
         
         await new Promise(res => {
