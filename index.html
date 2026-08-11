@@ -1526,7 +1526,7 @@ function loadStandingsData(lg) {
                 let rows;
                 if (useIndexFormat) {
                     rows = (res.data || []).slice(1) // skip header row
-                        .map((r, idx) => {
+                        .map((r) => {
                             const team = (r[0] || '').toString().trim();
                             if (!team || team.toLowerCase() === 'team') return null;
                             const mp  = parseInt(r[1] || 0, 10);
@@ -1538,7 +1538,7 @@ function loadStandingsData(lg) {
                             const gd  = parseInt(r[7] || 0, 10);
                             const pts = parseInt(r[8] || 0, 10);
                             return {
-                                pos: idx + 1,
+                                pos: 0, // assigned below
                                 team,
                                 mp: isNaN(mp) ? 0 : mp,
                                 pl:  isNaN(mp) ? 0 : mp,
@@ -1552,6 +1552,8 @@ function loadStandingsData(lg) {
                                 wdl: `${isNaN(w)?0:w}-${isNaN(d)?0:d}-${isNaN(l)?0:l}`,
                             };
                         }).filter(Boolean);
+                    // Rows come pre-sorted from the sheet (position order) — just assign 1-N
+                    rows.forEach((r, i) => { r.pos = i + 1; });
                 } else {
                 rows = (res.data || []).map(r => {
                     let pos = r.Position || r.position || r['#'] || '';
@@ -1927,7 +1929,7 @@ function parseSheetDate(raw) {
     if (!raw) return null;
     const str = raw.trim();
     const monthNameRegex = /(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|June|July|August|September|October|November|December)/i;
-    if (/matchday/i.test(str) || (!monthNameRegex.test(str) && /^\s*\d+[A-Z]?\b/i.test(str))) return 'MATCHDAY_MARKER';
+    if (/matchday/i.test(str) || (!monthNameRegex.test(str) && /^\s*\d+[A-Z]?\b/i.test(str) && !str.includes('/'))) return 'MATCHDAY_MARKER';
 
     const monthMap = {
         "January": 0, "February": 1, "March": 2, "April": 3, "May": 4, "June": 5,
@@ -1935,6 +1937,23 @@ function parseSheetDate(raw) {
         "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "Jun": 5,
         "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
     };
+
+    // Handle numeric formats: M/D/YYYY, D/M/YYYY, YYYY-MM-DD
+    const numericSlash = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (numericSlash) {
+        const [, a, b, y] = numericSlash;
+        // Assume M/D/YYYY (US format)
+        const d = new Date(parseInt(y), parseInt(a) - 1, parseInt(b));
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }
+    const isoDate = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (isoDate) {
+        const [, y, m, d] = isoDate;
+        const dt = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+        dt.setHours(0, 0, 0, 0);
+        return dt;
+    }
 
     const has2025 = str.includes('2025');
     let match = str.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|May|June|July|August|September|October|November|December)\.?\s*(\d+)/i);
