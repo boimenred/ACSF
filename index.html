@@ -3591,18 +3591,14 @@ async function renderStats(lg) {
     const el = document.getElementById('statsContent');
 
     const makeList = (title, arr, valueLabel, kind, league) => {
-        // Filter out 0 values for leaderboard categories (and protect against nulls)
         const filtered = (arr || []).filter(p => {
             const v = Number(p.value);
             if (Number.isNaN(v)) return false;
-            // Ratings: keep only > 0
-            if (kind === 'RATING') return v > 0;
-            // All other categories: keep only > 0
             return v > 0;
         });
 
-        // Keep your existing "top list" view compact
         const top = filtered.slice(0, 10);
+        const valueColor = kind === 'YELLOW' ? '#fbbf24' : kind === 'RED' ? '#ef4444' : '#00ff85';
 
         return `
             <div class="stat-card mb-4">
@@ -3627,10 +3623,10 @@ async function renderStats(lg) {
                                     <div class="text-[10px] text-zinc-500 cursor-pointer hover:underline" onclick="viewTeam('${_jsEscapeSingle(p.team)}', '${p.league || league}')">${p.team}</div>
                                 </div>
                             </div>
-                            <div class="font-black text-[#00ff85]">${valueLabel === 'RATING' ? (Number(p.value).toFixed(2)) : p.value}</div>
+                            <div class="font-black" style="color:${valueColor}">${valueLabel === 'RATING' ? (Number(p.value).toFixed(2)) : p.value}</div>
                         </div>
                     `).join('')}
-                    ${filtered.length === 0 ? `<div class="text-sm text-zinc-500 py-3">No players to show.</div>` : ``}
+                    ${filtered.length === 0 ? `<div class="text-sm text-zinc-500 py-3">No data yet.</div>` : ``}
                 </div>
             </div>`;
     };
@@ -3646,8 +3642,8 @@ async function renderStats(lg) {
         ${makeList('Assists', data.assists, 'ASSISTS', 'ASSISTS', lg)}
         ${makeList('Clean Sheets', cleanSheetsToShow, 'CLEAN', 'CLEAN', lg)}
         ${makeList('Average Rating', data.ratings, 'RATING', 'RATING', lg)}
-        ${(data.yellowCards && data.yellowCards.length) ? makeList('Yellow Cards', data.yellowCards, 'YC', 'YELLOW', lg) : ''}
-        ${(data.redCards && data.redCards.length) ? makeList('Red Cards', data.redCards, 'RC', 'RED', lg) : ''}
+        ${makeList('Yellow Cards', data.yellowCards || [], 'YC', 'YELLOW', lg)}
+        ${makeList('Red Cards', data.redCards || [], 'RC', 'RED', lg)}
     `;
 }
 
@@ -3722,6 +3718,14 @@ function openFullLeaderboard(kind, league) {
         title = 'Average Rating';
         valueHdr = 'Rating';
         arr = (data.ratings || []);
+    } else if (kind === 'YELLOW') {
+        title = 'Yellow Cards';
+        valueHdr = 'YC';
+        arr = (data.yellowCards || []);
+    } else if (kind === 'RED') {
+        title = 'Red Cards';
+        valueHdr = 'RC';
+        arr = (data.redCards || []);
     }
 
     // Filter out zeros
