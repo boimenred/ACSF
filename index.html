@@ -1890,8 +1890,8 @@ function countryFlag(nationality) {
 }
 
 const LEAGUE_META = {
-    PREM: { name: 'England - Premier League', logo: 'https://images.fotmob.com/image_resources/logo/teamlogo/eng.png' },
-    LALIGA: { name: 'Spain - La Liga', logo: 'https://images.fotmob.com/image_resources/logo/teamlogo/esp.png' },
+    PREM: { name: 'ENG - Premier League', logo: 'https://images.fotmob.com/image_resources/logo/teamlogo/eng.png' },
+    LALIGA: { name: 'ESP - La Liga', logo: 'https://images.fotmob.com/image_resources/logo/teamlogo/esp.png' },
     MLS: { name: 'USA - MLS', logo: 'https://images.fotmob.com/image_resources/logo/teamlogo/usa.png' },
     UCL: { name: 'Europe - Champions League', logo: 'https://images.fotmob.com/image_resources/logo/leaguelogo/dark/42.png' },
     EUROPA: { name: 'Europe - Europa League', logo: 'https://images.fotmob.com/image_resources/logo/leaguelogo/dark/73.png' },
@@ -2339,7 +2339,10 @@ function renderMatches() {
         const leagueLabel = LEAGUE_META[lg].name;
         const groups = {};
         matches.forEach(m => {
-            const label = (m.comp && m.comp.trim()) ? m.comp.trim() : leagueLabel;
+            // If comp is just a matchday number or empty, use league label
+            const rawComp = (m.comp || '').trim();
+            const isMatchdayNum = /^matchday\s*\d+$/i.test(rawComp) || /^\d+$/.test(rawComp);
+            const label = (!rawComp || isMatchdayNum) ? leagueLabel : rawComp;
             if (!groups[label]) groups[label] = [];
             groups[label].push(m);
         });
