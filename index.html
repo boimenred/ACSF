@@ -441,8 +441,8 @@ const LOGOS = {
     "Deportivo de La Coruña": "https://upload.wikimedia.org/wikipedia/en/thumb/5/56/RC_Deportivo_A_Coru%C3%B1a_logo_2026.svg/250px-RC_Deportivo_A_Coru%C3%B1a_logo_2026.svg.png",
     "RC Deportivo": "https://upload.wikimedia.org/wikipedia/en/thumb/5/56/RC_Deportivo_A_Coru%C3%B1a_logo_2026.svg/250px-RC_Deportivo_A_Coru%C3%B1a_logo_2026.svg.png",
     "Deportivo": "https://upload.wikimedia.org/wikipedia/en/thumb/5/56/RC_Deportivo_A_Coru%C3%B1a_logo_2026.svg/250px-RC_Deportivo_A_Coru%C3%B1a_logo_2026.svg.png",
-    "Getafe": "https://upload.wikimedia.org/wikipedia/en/thumb/4/46/Getafe_logo.svg/1280px-Getafe_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
-    "Getafe CF": "https://upload.wikimedia.org/wikipedia/en/thumb/4/46/Getafe_logo.svg/1280px-Getafe_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+    "Getafe": "https://upload.wikimedia.org/wikipedia/en/thumb/4/46/Getafe_logo.svg/1280px-Getafe_logo.svg.png",
+    "Getafe CF": "https://upload.wikimedia.org/wikipedia/en/thumb/4/46/Getafe_logo.svg/1280px-Getafe_logo.svg.png",
     "Nott'm Forest": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e5/Nottingham_Forest_F.C._logo.svg/960px-Nottingham_Forest_F.C._logo.svg.png",
     "Sunderland": "https://resources.premierleague.com/premierleague25/badges-alt/56.svg",
     "Burnley": "https://resources.premierleague.com/premierleague25/badges-alt/90.svg",
@@ -1926,8 +1926,24 @@ const LEAGUE_META = {
 };
 
 const STATS_URLS = {
-    PREM: null,
-    LALIGA: null,
+    PREM: {
+        goals: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRY7WxftOvUi9K2akemXQNtkPpY4USMS-x1O4lPBr_r-XuCMTx0SHeJ_ft7U_0DmqFThOuA-5f98_0u/pub?gid=0&single=true&output=csv',
+        assists: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRY7WxftOvUi9K2akemXQNtkPpY4USMS-x1O4lPBr_r-XuCMTx0SHeJ_ft7U_0DmqFThOuA-5f98_0u/pub?gid=1828601090&single=true&output=csv',
+        cleanSheets: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRY7WxftOvUi9K2akemXQNtkPpY4USMS-x1O4lPBr_r-XuCMTx0SHeJ_ft7U_0DmqFThOuA-5f98_0u/pub?gid=1875623411&single=true&output=csv',
+        yellowCards: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRY7WxftOvUi9K2akemXQNtkPpY4USMS-x1O4lPBr_r-XuCMTx0SHeJ_ft7U_0DmqFThOuA-5f98_0u/pub?gid=1773458327&single=true&output=csv',
+        redCards: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRY7WxftOvUi9K2akemXQNtkPpY4USMS-x1O4lPBr_r-XuCMTx0SHeJ_ft7U_0DmqFThOuA-5f98_0u/pub?gid=2097464999&single=true&output=csv',
+        ratingsLog: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRY7WxftOvUi9K2akemXQNtkPpY4USMS-x1O4lPBr_r-XuCMTx0SHeJ_ft7U_0DmqFThOuA-5f98_0u/pub?gid=812230696&single=true&output=csv',
+        avgRatings: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRY7WxftOvUi9K2akemXQNtkPpY4USMS-x1O4lPBr_r-XuCMTx0SHeJ_ft7U_0DmqFThOuA-5f98_0u/pub?gid=692292778&single=true&output=csv'
+    },
+    LALIGA: {
+        goals: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFqkXC6niGeOdNwTTV08Vpj9kysT3-BcepH6hIAWcjgx7qeG4pU46ACfGjmITVNJw1iZhtJKWy5ZP3/pub?gid=0&single=true&output=csv',
+        assists: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFqkXC6niGeOdNwTTV08Vpj9kysT3-BcepH6hIAWcjgx7qeG4pU46ACfGjmITVNJw1iZhtJKWy5ZP3/pub?gid=1828601090&single=true&output=csv',
+        cleanSheets: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFqkXC6niGeOdNwTTV08Vpj9kysT3-BcepH6hIAWcjgx7qeG4pU46ACfGjmITVNJw1iZhtJKWy5ZP3/pub?gid=1875623411&single=true&output=csv',
+        yellowCards: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFqkXC6niGeOdNwTTV08Vpj9kysT3-BcepH6hIAWcjgx7qeG4pU46ACfGjmITVNJw1iZhtJKWy5ZP3/pub?gid=1773458327&single=true&output=csv',
+        redCards: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFqkXC6niGeOdNwTTV08Vpj9kysT3-BcepH6hIAWcjgx7qeG4pU46ACfGjmITVNJw1iZhtJKWy5ZP3/pub?gid=2097464999&single=true&output=csv',
+        ratingsLog: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFqkXC6niGeOdNwTTV08Vpj9kysT3-BcepH6hIAWcjgx7qeG4pU46ACfGjmITVNJw1iZhtJKWy5ZP3/pub?gid=812230696&single=true&output=csv',
+        avgRatings: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFqkXC6niGeOdNwTTV08Vpj9kysT3-BcepH6hIAWcjgx7qeG4pU46ACfGjmITVNJw1iZhtJKWy5ZP3/pub?gid=692292778&single=true&output=csv'
+    },
     MLS: {
         goals: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuw34XoWFJCJm7vYxAmfNNOOuVnprbE2kuVb9OpEgUZQsA6KhbxCYtW81oe1BkaGJ01fFMBpV5he31/pub?gid=0&single=true&output=csv',
         assists: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuw34XoWFJCJm7vYxAmfNNOOuVnprbE2kuVb9OpEgUZQsA6KhbxCYtW81oe1BkaGJ01fFMBpV5he31/pub?gid=1828601090&single=true&output=csv',
@@ -3096,13 +3112,13 @@ function _findTeamLeague(teamName) {
 
 async function loadStats(league) {
     if (!STATS_URLS[league]) {
-        statsData[league] = { goals: [], assists: [], cleanSheets: [], ratings: [], players: {}, loaded: true };
+        statsData[league] = { goals: [], assists: [], cleanSheets: [], yellowCards: [], redCards: [], ratings: [], players: {}, loaded: true };
         return;
     }
     if (statsData[league] && statsData[league].loaded) return;
 
     const src = STATS_URLS[league];
-    const data = { goals: [], assists: [], cleanSheets: [], ratings: [], players: {}, loaded: false };
+    const data = { goals: [], assists: [], cleanSheets: [], yellowCards: [], redCards: [], ratings: [], players: {}, loaded: false };
 
     const parseCsv = (url, header=false) => new Promise((resolve) => {
         if (!url) return resolve([]);
@@ -3144,6 +3160,8 @@ async function loadStats(league) {
                 goals: 0,
                 assists: 0,
                 cleanSheets: 0,
+                yellowCards: 0,
+                redCards: 0,
                 avgRating: null,
                 matches: 0,
                 recentRatings: [],
@@ -3199,6 +3217,8 @@ async function loadStats(league) {
         await ingestABC(src.goals, 'goals', data.goals);
         await ingestABC(src.assists, 'assists', data.assists);
         await ingestABC(src.cleanSheets, 'cleanSheets', data.cleanSheets);
+        await ingestABC(src.yellowCards, 'yellowCards', data.yellowCards);
+        await ingestABC(src.redCards, 'redCards', data.redCards);
 
         if (src.avgRatings) {
             const objRows = await parseCsv(src.avgRatings, true);
@@ -3319,6 +3339,8 @@ async function loadStats(league) {
         data.goals = dedupeByKey(data.goals);
         data.assists = dedupeByKey(data.assists);
         data.cleanSheets = dedupeByKey(data.cleanSheets);
+        data.yellowCards = dedupeByKey(data.yellowCards);
+        data.redCards = dedupeByKey(data.redCards);
 
         if (data.ratings && data.ratings.length) {
             const byKey = new Map();
@@ -3340,6 +3362,8 @@ async function loadStats(league) {
         rankInt(data.goals);
         rankInt(data.assists);
         rankInt(data.cleanSheets);
+        rankInt(data.yellowCards);
+        rankInt(data.redCards);
         rankFloat(data.ratings);
 
         Object.values(data.players).forEach(p => {
@@ -3350,7 +3374,7 @@ async function loadStats(league) {
         data.loaded = true;
         statsData[league] = data;
     } catch (e) {
-        statsData[league] = { goals: [], assists: [], cleanSheets: [], ratings: [], players: {}, loaded: true };
+        statsData[league] = { goals: [], assists: [], cleanSheets: [], yellowCards: [], redCards: [], ratings: [], players: {}, loaded: true };
     }
 }
 
@@ -3538,7 +3562,7 @@ async function renderStats(lg) {
 
         const cloneArr = (arr) => (arr || []).map(x => ({ ...x }));
 
-        const combined = { goals: [], assists: [], cleanSheets: [], ratings: [], players: {}, loaded: true };
+        const combined = { goals: [], assists: [], cleanSheets: [], yellowCards: [], redCards: [], ratings: [], players: {}, loaded: true };
         ['PREM','LALIGA','MLS'].forEach(l => {
             const d = statsData[l] || {};
             combined.goals = combined.goals.concat(cloneArr(d.goals || []));
@@ -3625,6 +3649,8 @@ async function renderStats(lg) {
         ${makeList('Assists', data.assists, 'ASSISTS', 'ASSISTS', lg)}
         ${makeList('Clean Sheets', cleanSheetsToShow, 'CLEAN', 'CLEAN', lg)}
         ${makeList('Average Rating', data.ratings, 'RATING', 'RATING', lg)}
+        ${(data.yellowCards && data.yellowCards.length) ? makeList('Yellow Cards', data.yellowCards, 'YC', 'YELLOW', lg) : ''}
+        ${(data.redCards && data.redCards.length) ? makeList('Red Cards', data.redCards, 'RC', 'RED', lg) : ''}
     `;
 }
 
@@ -3671,7 +3697,7 @@ function closeFullLeaderboard() {
 
 function openFullLeaderboard(kind, league) {
     const modal = _ensureFullLeaderboardModal();
-    const data = statsData[league] || { goals: [], assists: [], cleanSheets: [], ratings: [], players: {} };
+    const data = statsData[league] || { goals: [], assists: [], cleanSheets: [], yellowCards: [], redCards: [], ratings: [], players: {} };
 
     let title = '';
     let valueHdr = '';
@@ -4032,11 +4058,13 @@ async function viewPlayer(playerKeyOrName) {
             const goals = playerInLeague.goals || 0;
             const assists = playerInLeague.assists || 0;
             const cs = playerInLeague.cleanSheets || 0;
+            const yc = playerInLeague.yellowCards || 0;
+            const rc = playerInLeague.redCards || 0;
             const matches = playerInLeague.matches || 0;
             const avgRating = playerInLeague.avgRating || 0;
             
             if (matches > 0) {
-                competitionStats[lg] = { goals, assists, cs, matches, avgRating };
+                competitionStats[lg] = { goals, assists, cs, yc, rc, matches, avgRating };
                 totalGoals += goals;
                 totalAssists += assists;
                 totalCS += cs;
@@ -4278,6 +4306,14 @@ async function viewPlayer(playerKeyOrName) {
                             ${isGK ? `<div style="text-align:center;">
                                 <div style="font-size:18px;font-weight:900;color:#fff;">${stats.cs}</div>
                                 <div style="font-size:9px;color:#666;font-weight:800;margin-top:2px;">CS</div>
+                            </div>` : ''}
+                            ${(stats.yc || 0) > 0 ? `<div style="text-align:center;">
+                                <div style="font-size:18px;font-weight:900;color:#fbbf24;">${stats.yc}</div>
+                                <div style="font-size:9px;color:#666;font-weight:800;margin-top:2px;">YC</div>
+                            </div>` : ''}
+                            ${(stats.rc || 0) > 0 ? `<div style="text-align:center;">
+                                <div style="font-size:18px;font-weight:900;color:#ef4444;">${stats.rc}</div>
+                                <div style="font-size:9px;color:#666;font-weight:800;margin-top:2px;">RC</div>
                             </div>` : ''}
                             <div style="background:#22c55e;padding:6px 10px;border-radius:8px;margin-left:8px;">
                                 <div style="font-size:14px;font-weight:900;color:#000;">${stats.avgRating.toFixed(2)}</div>
@@ -5168,6 +5204,11 @@ async function renderLeagueTabContent(tab, league) {
                 <div>${makeStatCard('Assists', data.assists || [], false, 'ASSISTS')}</div>
                 <div>${makeStatCard('ScoreHub Rating', data.ratings || [], true, 'RATING')}</div>
             </div>
+            ${(data.yellowCards && data.yellowCards.length) || (data.redCards && data.redCards.length) ? `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+                ${data.yellowCards && data.yellowCards.length ? `<div>${makeStatCard('Yellow Cards', data.yellowCards, false, 'YELLOW')}</div>` : ''}
+                ${data.redCards && data.redCards.length ? `<div>${makeStatCard('Red Cards', data.redCards, false, 'RED')}</div>` : ''}
+            </div>` : ''}
         `;
     }
 }
