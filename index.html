@@ -2935,31 +2935,24 @@ function renderStandings(lg) {
     }
 
     head.innerHTML = `<th class="pl-4 py-3">POS</th><th>Team</th><th class="text-center">MP</th><th class="text-center">W-D-L</th><th class="text-center">GF</th><th class="text-center">GA</th><th class="text-center">GD</th><th class="pr-4 text-right">PTS</th>`;
+    body.innerHTML = '<tr><td colspan="8" style="padding:16px;text-align:center;color:#555;">Loading...</td></tr>';
 
-    Papa.parse(STANDINGS_URLS[lg], {
-        download: true, header: true,
-        complete: (res) => {
-            body.innerHTML = (res.data || []).map(r => {
-                let pos = r.Position || r.position || r['#'] || '';
-                let team = r.Team || r.team || '';
-                const fixed = _stripLeadingPosFromTeam(pos, team);
-                pos = fixed.pos;
-                team = fixed.team;
-
-                const gf = r.GF || 0; const ga = r.GA || 0;
-                const color = getQualifyColor(lg, pos);
-                return `<tr class="border-b border-zinc-800/30">
-                    <td class="pl-4 py-5 flex items-center"><div class="qualify-indicator" style="background:${color}"></div><span class="text-zinc-500">${pos}</span></td>
-                    <td><div class="flex items-center gap-3 cursor-pointer hover:text-[#00ff85]" onclick="viewTeam('${_jsEscapeSingle(team)}', '${lg}')"><img src="${getLogo(team)}" class="w-6 h-6 object-contain"><span class="font-bold">${team}</span></div></td>
-                    <td class="text-center text-zinc-400 font-mono">${r.MP || r.mp || 0}</td>
-                    <td class="text-center font-mono text-[10px]">${r['W-D-L'] || '0-0-0'}</td>
-                    <td class="text-center text-zinc-400 font-mono">${gf}</td>
-                    <td class="text-center text-zinc-400 font-mono">${ga}</td>
-                    <td class="text-center text-zinc-400 font-mono">${r.GD || (gf - ga)}</td>
-                    <td class="pr-4 text-right text-[#00ff85] font-black">${r.Points || r.Pts || 0}</td>
-                </tr>`;
-            }).join('');
-        }
+    loadStandingsData(lg).then(rows => {
+        body.innerHTML = rows.map((r, idx) => {
+            const pos = r.pos || (idx + 1);
+            const team = r.team || '';
+            const color = getQualifyColor(lg, pos);
+            return `<tr class="border-b border-zinc-800/30" style="cursor:pointer;" onclick="viewTeam('${_jsEscapeSingle(team)}', '${lg}')" onmouseover="this.style.background='#161616'" onmouseout="this.style.background=''">
+                <td class="pl-4 py-5"><div class="flex items-center"><div class="qualify-indicator" style="background:${color}"></div><span class="text-zinc-500">${pos}</span></div></td>
+                <td><div class="flex items-center gap-3 hover:text-[#00ff85]"><img src="${getLogo(team)}" class="w-6 h-6 object-contain"><span class="font-bold">${team}</span></div></td>
+                <td class="text-center text-zinc-400 font-mono">${r.mp || 0}</td>
+                <td class="text-center font-mono text-[10px]">${r.wdl || '0-0-0'}</td>
+                <td class="text-center text-zinc-400 font-mono">${r.gf || 0}</td>
+                <td class="text-center text-zinc-400 font-mono">${r.ga || 0}</td>
+                <td class="text-center text-zinc-400 font-mono">${r.gd || 0}</td>
+                <td class="pr-4 text-right text-[#00ff85] font-black">${r.pts || 0}</td>
+            </tr>`;
+        }).join('');
     });
 
     const rules = lg === 'MLS'
