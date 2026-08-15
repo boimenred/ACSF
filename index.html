@@ -1551,33 +1551,35 @@ function loadStandingsData(lg) {
                 if (useIndexFormat) {
                     rows = (res.data || []).slice(1) // skip header row
                         .map((r) => {
-                            const team = (r[0] || '').toString().trim();
+                            const pos  = parseInt(r[0] || 0, 10);
+                            const team = (r[1] || '').toString().trim();
                             if (!team || team.toLowerCase() === 'team') return null;
-                            const mp  = parseInt(r[1] || 0, 10);
-                            const w   = parseInt(r[2] || 0, 10);
-                            const d   = parseInt(r[3] || 0, 10);
-                            const l   = parseInt(r[4] || 0, 10);
-                            const gf  = parseInt(r[5] || 0, 10);
-                            const ga  = parseInt(r[6] || 0, 10);
-                            const gd  = parseInt(r[7] || 0, 10);
-                            const pts = parseInt(r[8] || 0, 10);
+                            const mp  = parseInt(r[2] || 0, 10);
+                            const w   = parseInt(r[3] || 0, 10);
+                            const d   = parseInt(r[4] || 0, 10);
+                            const l   = parseInt(r[5] || 0, 10);
+                            const gf  = parseInt(r[6] || 0, 10);
+                            const ga  = parseInt(r[7] || 0, 10);
+                            const gd  = parseInt(r[8] || 0, 10);
+                            const pts = parseInt(r[9] || 0, 10);
                             return {
-                                pos: 0, // assigned below
+                                pos: isNaN(pos) ? 0 : pos,
                                 team,
-                                mp: isNaN(mp) ? 0 : mp,
-                                pl:  isNaN(mp) ? 0 : mp,
-                                w:   isNaN(w)  ? 0 : w,
-                                d:   isNaN(d)  ? 0 : d,
-                                l:   isNaN(l)  ? 0 : l,
-                                gf:  isNaN(gf) ? 0 : gf,
-                                ga:  isNaN(ga) ? 0 : ga,
-                                gd:  isNaN(gd) ? 0 : gd,
-                                pts: isNaN(pts)? 0 : pts,
+                                mp:  isNaN(mp)  ? 0 : mp,
+                                pl:  isNaN(mp)  ? 0 : mp,
+                                w:   isNaN(w)   ? 0 : w,
+                                d:   isNaN(d)   ? 0 : d,
+                                l:   isNaN(l)   ? 0 : l,
+                                gf:  isNaN(gf)  ? 0 : gf,
+                                ga:  isNaN(ga)  ? 0 : ga,
+                                gd:  isNaN(gd)  ? 0 : gd,
+                                pts: isNaN(pts) ? 0 : pts,
                                 wdl: `${isNaN(w)?0:w}-${isNaN(d)?0:d}-${isNaN(l)?0:l}`,
                             };
                         }).filter(Boolean);
-                    // Rows come pre-sorted from the sheet (position order) — just assign 1-N
-                    rows.forEach((r, i) => { r.pos = i + 1; });
+                    // Sort by pos from sheet; fallback to array order if pos is 0
+                    rows.sort((a, b) => (a.pos || 999) - (b.pos || 999));
+                    rows.forEach((r, i) => { if (!r.pos) r.pos = i + 1; });
                 } else {
                 rows = (res.data || []).map(r => {
                     let pos = r.Position || r.position || r['#'] || '';
