@@ -1549,11 +1549,16 @@ function loadStandingsData(lg) {
             complete: (res) => {
                 let rows;
                 if (useIndexFormat) {
-                    rows = (res.data || []).slice(1) // skip header row
-                        .map((r) => {
+                    const raw = res.data || [];
+                    // Auto-detect header: if first row col 0 is non-numeric (e.g. "Position", "POS", "#"), skip it
+                    const firstCell = (raw[0] && raw[0][0] || '').toString().trim();
+                    const hasHeader = firstCell === '' || isNaN(parseInt(firstCell, 10));
+                    const dataRows = hasHeader ? raw.slice(1) : raw;
+
+                    rows = dataRows.map((r) => {
                             const pos  = parseInt(r[0] || 0, 10);
                             const team = (r[1] || '').toString().trim();
-                            if (!team || team.toLowerCase() === 'team') return null;
+                            if (!team || team.toLowerCase() === 'team' || team.toLowerCase() === 'position') return null;
                             const mp  = parseInt(r[2] || 0, 10);
                             const w   = parseInt(r[3] || 0, 10);
                             const d   = parseInt(r[4] || 0, 10);
@@ -1577,7 +1582,6 @@ function loadStandingsData(lg) {
                                 wdl: `${isNaN(w)?0:w}-${isNaN(d)?0:d}-${isNaN(l)?0:l}`,
                             };
                         }).filter(Boolean);
-                    // Sort by pos from sheet; fallback to array order if pos is 0
                     rows.sort((a, b) => (a.pos || 999) - (b.pos || 999));
                     rows.forEach((r, i) => { if (!r.pos) r.pos = i + 1; });
                 } else {
